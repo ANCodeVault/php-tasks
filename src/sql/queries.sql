@@ -561,3 +561,32 @@ select au_id, pub_id, a.state as 'au_state', p.state as 'pub_state' from authors
 # Получить перечень книг, и издателей этих книг так, чтобы рядом с идентификатором книги были показаны в одной строке наименование издателя.
 select t.title_id, t.pub_id, p.pub_name from publishers p natural join titles t;
 
+# Получить идентификаторы для книг, авторы которых получили аванс меньше 20 000, в сочетании с идентификаторами издателя, напечатавшего каждую книгу.
+select t.title_id, t.pub_id, p.pub_name, r.advance from publishers p natural join titles t natural join royalties r where r.advance < 20000;
+
+select t.title_id, t.pub_id, p.pub_name, r.advance from publishers p inner join titles t on p.pub_id = t.pub_id inner join royalties r on t.title_id = r.title_id where r.advance < 20000;
+
+# Создание внутреннего объединения INNER JOIN
+
+# Считывает результат, который включает только объединенные строки, соответствующие условиям объединения.
+# SELECT columns FROM table1 INNER JOIN table2 ON join_conditions
+
+# Получить список книг, которые написали все авторы (в том числе и в соавторстве).
+select a.au_id, a.au_fname, a.au_lname, ta.title_id from authors a inner join title_authors ta on a.au_id = ta.au_id order by a.au_id asc, ta.title_id asc;
+
+select a.au_id, a.au_fname, a.au_lname, ta.title_id from authors a, title_authors ta where a.au_id = ta.au_id order by a.au_id asc, ta.title_id asc;
+
+# Получить информацию о каждой книге, а также информацию обо всех книгах других издательств.
+select t.title_id, t.title_name, t.pub_id, p.pub_name from titles t inner join publishers p on p.pub_id = t.pub_id order by t.title_name asc;
+
+select t.title_id, t.title_name, t.pub_id, p.pub_name from titles t inner join publishers p on p.pub_id = t.pub_id order by t.title_name asc;
+
+# Получить список авторов, которые живут во всех городах, где расположены издательства.
+select a.au_id, a.au_fname, a.au_lname, a.city, a.state from authors a inner join publishers p on a.city = p.city and a.state = p.state order by a.au_id asc;
+
+select a.au_id, a.au_fname, a.au_lname, a.city, a.state from authors a, publishers p where a.city = p.city and a.state = p.state order by a.au_id asc;
+
+select a.au_id, a.au_fname, a.au_lname, a.city, a.state from authors a natural join publishers p order by a.au_id asc;
+
+
+
