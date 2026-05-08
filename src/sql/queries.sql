@@ -588,5 +588,34 @@ select a.au_id, a.au_fname, a.au_lname, a.city, a.state from authors a, publishe
 
 select a.au_id, a.au_fname, a.au_lname, a.city, a.state from authors a natural join publishers p order by a.au_id asc;
 
+# Получить список книг, опубликованных в штате Калифорния или вне крупных стран Северной Америки.
+select t.title_id, t.title_name, p.state, p.country from titles t inner join publishers p on t.pub_id = p.pub_id where p.state = 'CA' or p.country not in ('USA', 'Canada', 'Mexico') order by t.title_id asc;
+
+select t.title_id, t.title_name, p.state, p.country from titles t, publishers p where t.pub_id = p.pub_id and (p.state = 'CA' or p.country not in('USA', 'Canada', 'Mexico')) order by t.title_id asc;
+
+# Получить список книг, написанных всеми авторами (в том числе в соавторстве).
+select a.au_id, count(ta.title_id) as 'Num books' from authors a inner join title_authors ta on a.au_id = ta.au_id group by a.au_id order by a.au_id asc;
+
+select a.au_id, count(ta.title_id) as 'Num books' from authors a, title_authors ta where a.au_id = ta.au_id group by a.au_id order by a.au_id asc;
+
+# Получить авансы выплаченные за книги-биографии.
+select t.title_id, t.title_name, r.advance from royalties r inner join titles t on r.title_id = t.title_id where t.type = 'biography' and r.advance is not null order by r.advance desc;
+
+select t.title_id, t.title_name, r.advance from royalties r, titles t where r.title_id = t.title_id and t.type = 'biography' and r.advance is not null order by r.advance desc;
+
+# Получить счет и аванс, выплаченный за каждый тип книг.
+select t.type, count(r.advance) as 'count(r.advance)', sum(r.advance) as 'sum(r.advance)' from royalties r inner join titles t on r.title_id = t.title_id where r.advance is not null group by t.type order by t.type asc;
+
+select t.type, count(r.advance) as 'count(r.advance)', sum(r.advance) as 'sum(r.advance' from royalties r, titles t where r.title_id = t.title_id and r.advance is not null group by t.type order by t.type desc;
+
+# Получить количество выплаченных авансов и их общей суммы за каждый тип книг с разбивкой по издетельствам.
+select t.type, t.pub_id, count(r.advance) as 'count(r.advance)', sum(r.advance) as 'sum(r.advance)' from royalties r inner join titles t on r.title_id = t.title_id where r.advance is not null group by t.type, t.pub_id order by t.type asc, t.pub_id asc;
+
+select t.type, t.pub_id, count(r.advance) as 'count(r.advance)', sum(r.advance) as 'sum(r.advance)' from royalties r, titles t where r.title_id = t.title_id and r.advance is not null group by t.type, t.pub_id order by t.type asc, t.pub_id asc;
+
+# Получить список соавторов для всех книг, у которых они есть.
+select ta.title_id, count(ta.au_id) as 'Num authors' from authors a inner join title_authors ta on a.au_id = ta.au_id group by ta.title_id having count(ta.au_id) > 1 order by ta.title_id asc;
+
+select ta.title_id, count(ta.au_id) as 'Num authors' from authors a, title_authors ta where a.au_id = ta.au_id group by ta.title_id having count(ta.au_id) > 1 order by ta.title_id asc;
 
 
