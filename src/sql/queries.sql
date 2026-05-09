@@ -618,4 +618,36 @@ select ta.title_id, count(ta.au_id) as 'Num authors' from authors a inner join t
 
 select ta.title_id, count(ta.au_id) as 'Num authors' from authors a, title_authors ta where a.au_id = ta.au_id group by ta.title_id having count(ta.au_id) > 1 order by ta.title_id asc;
 
+# Получить все книги, прибыль от которых (=цена х продажи) превышает сумму аванса, уплаченного автору, не меньше чем в 10 раз.
+select t.title_id, t.title_name, r.advance, t.price * t.sales as Revenue from titles t inner join royalties r on t.price * t.sales > r.advance * 10 and t.title_id = r.title_id order by t.price * t.sales desc;
+
+select t.title_id, t.title_name, r.advance, t.price * t.sales as Revenue from titles t, royalties r where t.price * t.sales > r.advance * 10 and t.title_id = r.title_id order by t.price * t.sales desc;
+
+# Получить список авторов и названий книг, которые написали все авторы.
+select a.au_fname, a.au_lname, t.title_name from authors a inner join title_authors ta on a.au_id = ta.au_id inner join titles t on t.title_id = ta.title_id order by a.au_lname asc, a.au_fname asc, t.title_name asc;
+
+select a.au_fname, a.au_lname, t.title_name from authors a, title_authors ta, titles t where a.au_id = ta.au_id and t.title_id = ta.title_id order by a.au_lname asc, a.au_fname asc, t.title_name asc;
+
+# Получить имена авторов, названия всех книг, а также названия издательств.
+select a.au_fname, a.au_lname, t.title_name, p.pub_name from authors a inner join title_authors ta on a.au_id = ta.au_id inner join titles t on t.title_id = ta.title_id inner join publishers p on p.pub_id = t.pub_id order by a.au_lname asc, a.au_fname asc, t.title_name asc;
+
+select a.au_fname, a.au_lname, t.title_name, p.pub_name from authors a, title_authors ta, titles t, publishers p where a.au_id = ta.au_id and t.title_id = ta.title_id and p.pub_id = t.pub_id order by a.au_lname asc, a.au_fname asc, t.title_name asc;
+
+# Получить все гонорары за все книги.
+select
+    sum(t.sales * t.price * r.royalty_rate) as 'Total royalties',
+    sum(r.advance) as 'Total advances',
+    sum((t.sales * t.price * r.royalty_rate) - r.advance) as 'Total due to authors'
+from titles t
+inner join royalties r
+on r.title_id = t.title_id
+where t.sales is not null;
+
+select
+    sum(t.sales * t.price * r.royalty_rate) as 'Total royalties',
+    sum(r.advance) as 'Total advances',
+    sum((t.sales * t.price * r.royalty_rate) - r.advance) as 'Total due to authors'
+from titles t, royalties r
+where t.title_id = r.title_id
+  and t.sales is not null;
 
