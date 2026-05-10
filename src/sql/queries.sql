@@ -651,3 +651,118 @@ from titles t, royalties r
 where t.title_id = r.title_id
   and t.sales is not null;
 
+# Расчитать все гонорар, полученный каждым автором за все книги, которые он написал.
+select
+    ta.au_id,
+    t.title_id,
+    t.pub_id,
+    t.sales * t.price * r.royalty_rate * ta.royalty_share as 'Royalty share',
+    r.advance * ta.royalty_share as 'Advance share',
+    (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) as 'Due to author'
+from title_authors ta
+inner join titles t
+    on t.title_id = ta.title_id
+inner join royalties r
+    on r.title_id = t.title_id
+where t.sales is not null
+order by ta.au_id asc, t.title_id asc;
+
+select
+    ta.au_id,
+    t.title_id,
+    t.pub_id,
+    t.sales * t.price * r.royalty_rate * ta.royalty_share as 'Royalty share',
+    r.advance * ta.royalty_share as 'Advance share',
+    (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) as 'Due to author'
+from title_authors ta, titles t, royalties r
+where t.title_id = ta.title_id and r.title_id = t.title_id and t.sales is not null
+order by ta.au_id asc, t.title_id asc;
+
+# Получить только те гонорары за книги, которые больше нуля.
+select
+    a.au_id,
+    a.au_fname,
+    a.au_lname,
+    t.title_name,
+    (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) as 'Due to author'
+from authors a
+inner join title_authors ta
+    on a.au_id = ta.au_id
+inner join titles t
+    on t.title_id = ta.title_id
+inner join royalties r
+    on r.title_id = t.title_id
+where t.sales is not null
+    and (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) > 0
+order by a.au_id asc, t.title_id asc;
+
+select
+    a.au_id,
+    a.au_fname,
+    a.au_lname,
+    t.title_name,
+    (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) as 'Due to author'
+from authors a, title_authors ta, titles t, royalties r
+where a.au_id = ta.au_id
+    and t.title_id = ta.title_id
+    and r.title_id = t.title_id
+    and t.sales is not null
+    and (t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share) > 0
+order by a.au_id asc, t.title_id asc;
+
+# Получить гонорары, выплаченные каждым издателем.
+select
+    t.pub_id,
+    count(t.sales) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate) as 'Total royalties',
+    sum(r.advance) as 'Total advances',
+    sum((t.sales * t.price * r.royalty_rate) - r.advance) as 'Total due to authors'
+from titles t
+inner join royalties r
+    on t.title_id = r.title_id
+where t.sales is not null
+group by t.pub_id
+order by t.pub_id asc;
+
+select
+    t.pub_id,
+    count(t.sales) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate) as 'Total royalties',
+    sum(r.advance) as 'Total advances',
+    sum((t.sales * t.price * r.royalty_rate) - r.advance) as 'Total due to authors'
+from titles t, royalties r
+where t.title_id = r.title_id
+    and t.sales is not null
+group by t.pub_id
+order by t.pub_id asc;
+
+# Расчитать все гонорары, полученные каждым автором за все книги.
+select
+    ta.au_id,
+    count(sales) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate * ta.royalty_share) as 'Total royalties share',
+    sum(r.advance * ta.royalty_share) as 'Total advances share',
+    sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) as 'Total due to author'
+from title_authors ta
+inner join titles t
+    on t.title_id = ta.title_id
+inner join royalties r
+    on r.title_id = t.title_id
+where t.sales is not null
+group by ta.au_id
+order by ta.au_id asc;
+
+select
+    ta.au_id,
+    count(sales) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate * ta.royalty_share) as 'Total royalties share',
+    sum(r.advance * ta.royalty_share) as 'Total advances share',
+    sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) as 'Total due to author'
+from title_authors ta, titles t, royalties r
+where ta.title_id = t.title_id
+    and r.title_id = t.title_id
+    and t.sales is not null
+group by ta.au_id
+order by ta.au_id asc;
+
+
