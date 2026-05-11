@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\RefactoringStrategies\LongMethod\V1;
 
-class OrderDetail
+readonly class OrderDetail
 {
     public function __construct(
         private int $price,
