@@ -7,25 +7,13 @@ namespace App\RefactoringStrategies\LongMethod\V1;
 readonly class Customer
 {
 
-    private string $username;
-    private string $address;
-    private int $vat;
-    private int $maxAmountDiscount;
-    private int $discountForMaxAmount;
-
     public function __construct(
-        string $username,
-        string $address,
-        int $vat,
-        int $maxAmountDiscount,
-        int $discountForMaxAmount,
-    ) {
-        $this->username = $username;
-        $this->address = $address;
-        $this->vat = $vat;
-        $this->maxAmountDiscount = $maxAmountDiscount;
-        $this->discountForMaxAmount = $discountForMaxAmount;
-    }
+        private string $username,
+        private string $address,
+        private int $vat,
+        private int $maxAmountDiscount,
+        private int $discountForMaxAmount,
+    ) {}
 
     public static function create(
         string $username,

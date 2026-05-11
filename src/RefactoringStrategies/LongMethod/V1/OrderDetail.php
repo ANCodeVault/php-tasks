@@ -6,20 +6,11 @@ namespace App\RefactoringStrategies\LongMethod\V1;
 
 class OrderDetail
 {
-
-    private int $price;
-    private int $quantity;
-    private int $vat;
-
     public function __construct(
-        int $price,
-        int $quantity,
-        int $vat,
-    ) {
-        $this->price = $price;
-        $this->quantity = $quantity;
-        $this->vat = $vat;
-    }
+        private int $price,
+        private int $quantity,
+        private int $vat,
+    ) {}
 
     public function getPrice(): int
     {

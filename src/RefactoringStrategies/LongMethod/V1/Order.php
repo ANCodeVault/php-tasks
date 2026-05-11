@@ -8,12 +8,8 @@ class Order
 {
     private int $discount = 0;
     private array $items = [];
-    private Customer $customer;
 
-    public function __construct(Customer $customer)
-    {
-        $this->customer = $customer;
-    }
+    public function __construct(private readonly Customer $customer) {}
 
     public function getCustomer(): Customer
     {
