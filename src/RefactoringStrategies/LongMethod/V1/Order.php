@@ -43,10 +43,22 @@ class Order
 
     public function calculate(): float
     {
-        $total = 0;
-        $items = $this->getItems();
+        $total = $this->calculateTotalSum();
 
-        foreach ($items as $item) {
+        if ($this->hasDiscount()) {
+            $total = $total - ($total / 100 * $this->getDiscount());
+        } elseif ($this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount()) {
+            $total = $total - ($total / 100 * $this->getCustomer()->getDiscountForMaxAmount());
+        }
+
+        return round($total, 2);
+    }
+
+    private function calculateTotalSum(): float
+    {
+        $result = 0;
+
+        foreach ($this->getItems() as $item) {
             if ($item->hasVat()) {
                 $vat = $item->getVat();
             } elseif ($this->getCustomer()->hasVat()) {
@@ -56,16 +68,10 @@ class Order
             }
 
             $price = $item->getPrice() * $item->getQuantity();
-            $total += $price + ($price / 100 * $vat);
+            $result += $price + ($price / 100 * $vat);
         }
 
-        if ($this->hasDiscount()) {
-            $total = $total - ($total / 100 * $this->getDiscount());
-        } elseif ($this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount()) {
-            $total = $total - ($total / 100 * $this->getCustomer()->getDiscountForMaxAmount());
-        }
-
-        return round($total, 2);
+        return $result;
     }
 
 }
