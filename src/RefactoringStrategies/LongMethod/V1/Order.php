@@ -53,16 +53,7 @@ class Order
         $result = 0;
 
         foreach ($this->getItems() as $item) {
-            if ($item->hasVat()) {
-                $vat = $item->getVat();
-            } elseif ($this->getCustomer()->hasVat()) {
-                $vat = $this->getCustomer()->getVat();
-            } else {
-                $vat = 0;
-            }
-
-            $price = $item->getPrice() * $item->getQuantity();
-            $result += $price + ($price / 100 * $vat);
+            $result += $item->calculate($this);
         }
 
         return $result;

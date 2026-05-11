@@ -22,14 +22,25 @@ class OrderDetail
         return $this->quantity;
     }
 
-    public function getVat(): int
+    public function getVat(Order $order): int
     {
+        if (!$this->hasVat()) {
+            return $order->getCustomer()->getVat();
+        }
+
         return $this->vat;
     }
 
     public function hasVat(): bool
     {
         return $this->vat > 0;
+    }
+
+    public function calculate(Order $order): float
+    {
+        $price = $this->getPrice() * $this->getQuantity();
+
+        return $price + ($price / 100 * $this->getVat($order));
     }
 
 }
