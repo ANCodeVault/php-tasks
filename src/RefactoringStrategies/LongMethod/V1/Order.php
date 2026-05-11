@@ -63,11 +63,16 @@ class Order
     {
         if ($this->hasDiscount()) {
             $total = $total - ($total / 100 * $this->getDiscount());
-        } elseif ($this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount()) {
+        } elseif ($this->isCustomerDiscount($total)) {
             $total = $total - ($total / 100 * $this->getCustomer()->getDiscountForMaxAmount());
         }
 
         return $total;
+    }
+
+    private function isCustomerDiscount(float $total): bool
+    {
+        return $this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount();
     }
 
 }
