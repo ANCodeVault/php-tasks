@@ -766,3 +766,79 @@ group by ta.au_id
 order by ta.au_id asc;
 
 
+# Получить гонорары, которые будут выплачены каждым издательством, расположенным в США, каждому автору за все его книги.
+select
+    t.pub_id,
+    ta.au_id,
+    count(*) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate * ta.royalty_share) as 'Total royalties share',
+    sum(r.advance * ta.royalty_share) as 'Total advances share',
+    sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) as 'Total due to author'
+from title_authors ta
+inner join titles t
+    on t.title_id = ta.title_id
+inner join royalties r
+    on r.title_id = t.title_id
+inner join publishers p
+    on p.pub_id = t.pub_id
+where t.sales is not null
+    and p.country in ('USA')
+group by t.pub_id, ta.au_id
+having sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) > 0
+order by t.pub_id asc, ta.au_id asc;
+
+select
+    t.pub_id,
+    ta.au_id,
+    count(*) as 'Num books',
+    sum(t.sales * t.price * r.royalty_rate * ta.royalty_share) as 'Total royalties share',
+    sum(r.advance * ta.royalty_share) as 'Total advances share',
+    sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) as 'Total due to author'
+from title_authors ta, titles t, royalties r, publishers p
+where t.title_id = ta.title_id
+    and r.title_id = t.title_id
+    and p.pub_id = t.pub_id
+    and t.sales is not null
+    and p.country in ('USA')
+group by t.pub_id, ta.au_id
+having sum((t.sales * t.price * r.royalty_rate * ta.royalty_share) - (r.advance * ta.royalty_share)) > 0
+order by t.pub_id asc, ta.au_id asc;
+
+# Создание внешних объединений команда OUTER JOIN
+
+# SELECT columns
+# FROM left_table
+# LEFT [OUTER] JOIN right_table
+# ON join_conditions
+
+# Создание полного внешнего объединения
+
+# SELECT columns
+# FROM left_table
+# FULL [OUTER] JOIN right_table
+# ON join_conditions
+
+# Получить список городов, в которых живут авторы и расположены издательства.
+select a.au_fname, a.au_lname, a.city from authors a;
+
+select p.pub_name, p.city from publishers p;
+
+select a.au_fname, a.au_lname, p.pub_name from authors a inner join publishers p on a.city = p.city;
+
+select a.au_fname, a.au_lname, p.pub_name from authors a, publishers p where a.city = p.city;
+
+# Это левое внешнее объединение включает в результат все строки, независимо от того, есть ли соответствие в столбце city таблицы publishers.
+select a.au_fname, a.au_lname, p.pub_name from authors a left outer join publishers p on a.city = p.city order by p.pub_name asc, a.au_lname asc, a.au_fname asc;
+
+# Это левое внешнее объединение включает в результат все строки таблицы publishers, независимо от того, есть ли соответствие в столбце city таблицы authors.
+select a.au_fname, a.au_lname, p.pub_name from authors a right outer join publishers p on a.city = p.city order by p.pub_name asc, a.au_lname asc, a.au_fname asc;
+
+# Это полное внешнее объединение включает в результат все строки таблиц publishers и authors, независимо от того, есть ли соответствия в столбцах city.
+select a.au_fname, a.au_lname, p.pub_name from authors a full outer join publishers p on a.city = p.city order by p.pub_name asc, a.au_lname asc, a.au_fname asc;
+
+# Получить количество книг, написанных авторами в ключая тех, кто не написал ни одной книги.
+select a.au_id, count(ta.title_id) as 'Num books' from authors a left join title_authors ta on a.au_id = ta.au_id group by a.au_id order by a.au_id asc;
+
+# Получить только тех авторов, которые не написали ни одной книги.
+select a.au_id, a.au_fname, a.au_lname from authors a left join title_authors ta on a.au_id = ta.au_id where ta.au_id is null;
+
