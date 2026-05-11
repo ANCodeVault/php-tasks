@@ -43,15 +43,9 @@ class Order
 
     public function calculate(): float
     {
-        $total = $this->calculateTotalSum();
+        $result = $this->applyDiscount($this->calculateTotalSum());
 
-        if ($this->hasDiscount()) {
-            $total = $total - ($total / 100 * $this->getDiscount());
-        } elseif ($this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount()) {
-            $total = $total - ($total / 100 * $this->getCustomer()->getDiscountForMaxAmount());
-        }
-
-        return round($total, 2);
+        return round($result, 2);
     }
 
     private function calculateTotalSum(): float
@@ -72,6 +66,17 @@ class Order
         }
 
         return $result;
+    }
+
+    private function applyDiscount(float $total): float
+    {
+        if ($this->hasDiscount()) {
+            $total = $total - ($total / 100 * $this->getDiscount());
+        } elseif ($this->getCustomer()->hasDiscountForMaxAmount() && $total >= $this->getCustomer()->getMaxAmountForDiscount()) {
+            $total = $total - ($total / 100 * $this->getCustomer()->getDiscountForMaxAmount());
+        }
+
+        return $total;
     }
 
 }
