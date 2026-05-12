@@ -842,3 +842,28 @@ select a.au_id, count(ta.title_id) as 'Num books' from authors a left join title
 # Получить только тех авторов, которые не написали ни одной книги.
 select a.au_id, a.au_fname, a.au_lname from authors a left join title_authors ta on a.au_id = ta.au_id where ta.au_id is null;
 
+# Получить авторов и их книги, тиражи которых превысили 100 000 экземпляров.
+select a.au_id, a.au_fname, a.au_lname,
+       tta.title_id, tta.title_name, tta.sales
+from authors a
+left join (select ta.au_id, t.title_id, t.title_name, t.sales from title_authors ta
+        inner join titles t
+            on t.title_id = ta.title_id
+            where sales > 100000) tta
+on a.au_id = tta.au_id
+order by a.au_id asc, tta.title_id asc;
+
+# Создание самообъединения
+
+# SELECT columns
+# FROM table [AS] alias1
+# INNER JOIN table [AS] alias2
+# ON join_conditions
+
+
+
+
+
+
+
+
