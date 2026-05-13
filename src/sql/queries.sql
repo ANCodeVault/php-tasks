@@ -860,7 +860,10 @@ order by a.au_id asc, tta.title_id asc;
 # INNER JOIN table [AS] alias2
 # ON join_conditions
 
+# Получить всех авторов, которые живут в одном штате с автором A04 (Kell Hull).
+select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1 inner join authors a2 on a1.state = a2.state where a2.au_id = 'A04';
 
+select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1, authors a2 where a1.state = a2.state and a2.au_id = 'A04';
 
 
 
