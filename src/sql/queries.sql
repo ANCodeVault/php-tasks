@@ -865,6 +865,39 @@ select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1 inner join a
 
 select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1, authors a2 where a1.state = a2.state and a2.au_id = 'A04';
 
+# Отобразить для каждой биографии заголовки и данные о продаже других биографий, которые пользуются большим спросом.
+select t1.title_id, t1.sales, t2.title_id as 'Better seller', t2.sales as 'Higher sales'
+from titles t1
+    inner join titles t2
+        on t1.sales < t2.sales
+where t1.type = 'biography' and t2.type = 'biography'
+order by t1.title_id asc, t2.sales asc;
+
+select t1.title_id, t1.sales, t2.title_id as 'Better seller', t2.sales as 'Higher sales'
+from titles t1, titles t2
+where t1.type = 'biography' and t2.type = 'biography' and t1.sales < t2.sales
+order by t1.title_id asc, t2.sales asc;
+
+# Получить все пары авторов из штата Нью-Йорк.
+select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1 inner join authors a2 on a1.state = a2.state where a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1, authors a2 where a1.state = a2.state and a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+# Получить пары разных авторов из штата Нью-Йорк.
+select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1 inner join authors a2 on a1.state = a2.state and a1.au_id <> a2.au_id where a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1, authors a2 where a1.state = a2.state and a1.au_id <> a2.au_id and a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+# Получить пары разных авторов из штата Нью-Йорк без повторов.
+select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1 inner join authors a2 on a1.state = a2.state and a1.au_id < a2.au_id where a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+select a1.au_fname, a2.au_lname, a2.au_fname, a2.au_lname from authors a1, authors a2 where a1.state = a2.state and a1.au_id < a2.au_id and a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
+
+
+
+
+
+
 
 
 
