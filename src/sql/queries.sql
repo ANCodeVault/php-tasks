@@ -893,12 +893,34 @@ select a1.au_fname, a1.au_lname, a2.au_fname, a2.au_lname from authors a1 inner 
 
 select a1.au_fname, a2.au_lname, a2.au_fname, a2.au_lname from authors a1, authors a2 where a1.state = a2.state and a1.au_id < a2.au_id and a1.state = 'NY' order by a1.au_id asc, a2.au_id asc;
 
+# Комбинирование строк с помощью оператора UNION
 
+# select_statement1
+# UNION [ALL]
+# select statement2;
 
+# выражение UNION удаляет из результата повторяющиеся строки;
+# выражение UNION ALL сохраняет повторяющиеся строки;
 
+# Отобразить список шататов, в которых живут авторы и находятся издательства.
+select state from authors
+union
+select state from publishers;
 
+# Отобразить список штатов, в которых живут авторы и находятся издательства (в том числе повторы).
+select state from authors
+union all
+select state from publishers;
 
+# Отобразить список всех авторов и издательств.
+select concat(au_fname, ' ', au_lname) as Name from authors
+union
+select pub_name from publishers order by 1 asc;
 
+# Получить список всех авторов и издетельств из штата Нью-Йорк, отсортировав их по типу и названию.
+select 'author' as Type, concat(au_fname, ' ', au_lname) as Name, state from authors where state = 'NY'
+union
+select 'publisher', pub_name, state from publishers where state = 'NY' order by 1 asc, 2 asc;
 
 
 
