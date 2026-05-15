@@ -1,10 +1,10 @@
 {
   "authors": [
     {
-      "name": "unnamed"
+      "name": "hardzero"
     }
   ],
-  "description": "Задачник по PHP с решениями",
+  "description": "Сборник упражнений и задач по PHP",
   "autoload": {
     "psr-4": {
       "App\\": "src"
