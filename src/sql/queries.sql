@@ -922,6 +922,36 @@ select 'author' as Type, concat(au_fname, ' ', au_lname) as Name, state from aut
 union
 select 'publisher', pub_name, state from publishers where state = 'NY' order by 1 asc, 2 asc;
 
+# Отобразить список всех авторов и издательств из штата Нью-Йорк, а также названия книг, опубликованных в этом штате.
+select
+    'author' as 'Type',
+    concat(au_fname, ' ', au_lname) as 'Name'
+from authors where state = 'NY'
+union
+select
+    'publisher',
+    pub_name
+from publishers where state = 'NY'
+order by 1 asc, 2 asc;
 
+# Получить количество авторов, издательств из штата Нью-Йорк и книг, опубликованных в этом штате, получив их по типу.
+select
+    'author' as 'Type',
+    count(au_id) as 'Count'
+from authors where state = 'NY'
+union
+select
+    'publisher',
+    count(pub_id)
+from publishers where state = 'NY'
+union
+select
+    'title',
+    count(title_id)
+from titles t
+inner join publishers p
+    on t.pub_id = p.pub_id
+where p.state = 'NY'
+order by 1 asc;
 
 
