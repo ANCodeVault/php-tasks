@@ -954,4 +954,40 @@ inner join publishers p
 where p.state = 'NY'
 order by 1 asc;
 
+# Повысить цены на книги по истории на 10%, а книги по психологии на 20%, не меняя цены других книг.
+select title_id, type, price, price * 1.10 as 'New price' from titles where type = 'history'
+union
+select title_id, type, price, price * 1.20 from titles where type = 'psychology'
+union
+select title_id, type, price, price from titles where type not in ('history', 'psychology')
+order by type asc, title_id asc;
+
+# Поиск общих строк с помощью команды INTERSECT
+
+# select_statement1
+# INTERSECT
+# select_statement2;
+
+# Отобразить список городов, в которых живут авторы и находятся издательства.
+select city from authors intersect select city from publishers;
+
+select distinct authors.city from authors inner join publishers on authors.city = publishers.city;
+
+select distinct city from authors where exists (select * from publishers where authors.city = publishers.city);
+
+# Поиск разницы строк с помощью команды EXCEPT
+
+# select_statement1
+# EXCEPT
+# select_statement2;
+
+# Отобразить список городов, в которых живут авторы, но нет издательств
+select city from authors except select city from publishers;
+
+select distinct a.city from authors a left join publishers p on a.city = p.city where p.city is null;
+
+select distinct city from authors where not exists (select * from publishers where authors.city = publishers.city);
+
+select distinct city from authors where city not in (select city from publishers);
+
 
