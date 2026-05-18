@@ -990,4 +990,26 @@ select distinct city from authors where not exists (select * from publishers whe
 
 select distinct city from authors where city not in (select city from publishers);
 
+# Подзапросы
+
+# Подзапрос  – это команда SELECT, встроенная в другую команду SQL.
+
+# В подзапросе можно распологать следующие команды:
+# предложении SELECT, FROM, WHERE или HAVING другой команды SELECT;
+# команде INSERT, UPDATE или DELETE;
+# другом подзапросе.
+
+# Получить список издателей биографий.
+select pub_id from titles where type = 'biography';
+
+select pub_name from publishers where pub_id in ('P04', 'P03');
+
+select distinct pub_name from publishers p inner join titles t on p.pub_id = t.pub_id where t.type = 'biography';
+
+select pub_name from publishers where pub_id in (select pub_id from titles where type = 'biography');
+
+# Получить список всех авторов, которые живут в городе, где находится издатель.
+select au_id, city from authors where city in (select city from publishers);
+
+
 
