@@ -1011,5 +1011,57 @@ select pub_name from publishers where pub_id in (select pub_id from titles where
 # Получить список всех авторов, которые живут в городе, где находится издатель.
 select au_id, city from authors where city in (select city from publishers);
 
+select a.au_id, a.city from authors a inner join publishers p on a.city = p.city;
+
+# Подзапросв и объединения
+
+# Подзапрос с оператором IN
+# SELECT *
+# FROM table1
+# WHERE id IN
+# (SELECT id FROM table2);
+
+# Внутреннее объединение
+# SELECT table1.*
+# FROM table1
+# INNER JOIN table2
+# ON table1.id = table2.id;
+
+# Подзапрос NOT IN
+# SELECT *
+# FROM table1
+# WHERE id NOT IN
+# (SELECT id FROM table2)
+
+# Подзапрос NOT EXISTS
+# SELECT
+# table1.*
+# FROM table1
+# WHERE NOT EXISTS
+# (SELECT id FROM table2);
+
+# Внешнее объединение
+# SELECT table1.*
+# FROM table1
+# LEFT OUTER JOIN table2
+# ON table1.id = table2.id
+# WHERE table2.id IS NULL;
+
+# Этот подзапрос использует оператор NOT IN, чтобы получить список всех авторов, которые не написали ни одной книги.
+select au_id, au_fname, au_lname from authors where au_id not in (select au_id from title_authors);
+
+# с оператором EXISTS
+select au_id, au_fname, au_lname from authors a where not exists (select * from title_authors ta where a.au_id = ta.au_id);
+
+# с внешним объединением
+select a.au_id, a.au_fname, a.au_lname from authors a left outer join title_authors ta on a.au_id = ta.au_id where ta.au_id is null;
+
+# Получить список всех авторов, которые живут с автором A04 (Klee Hull) в одном штате.
+select au_id, au_fname, au_lname, state from authors where state in (select state from authors where au_id = 'A04');
+
+# с внутренним объединением
+select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1 inner join authors a2 on a1.state = a2.state where a2.au_id = 'A04';
+
+
 
 
