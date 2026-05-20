@@ -1062,6 +1062,32 @@ select au_id, au_fname, au_lname, state from authors where state in (select stat
 # с внутренним объединением
 select a1.au_id, a1.au_fname, a1.au_lname, a1.state from authors a1 inner join authors a2 on a1.state = a2.state where a2.au_id = 'A04';
 
+# Получить список всех книг, цена на которые соответствует самой высокой стоимости.
+select title_id, price from titles where price = (select max(price) from titles);
+
+# Получить список всех авторов, которые живут в городе, где находится издательство.
+select a.au_id, a.city, p.pub_id from authors a inner join publishers p on a.city = p.city;
+
+# Простые и сложные подзапросы
+
+# Получить список всех авторов, где находится издательство.
+select au_id, city from authors where city in (select city from publishers);
+
+# Получить список всех городов, в которых находится издательства.
+select city from publishers;
+
+select au_id, city from authors where city in ('New York', 'San Francisco', 'Hamburg', 'Berkley');
+
+# SELECT outer columns
+# FROM outer_table
+# WHERE outer_column_value IN
+# (SELECT inner_column
+# FROM inner_table
+# WHERE inner_column = outer_column)
+
+
+
+
 
 
 
