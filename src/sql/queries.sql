@@ -1085,6 +1085,14 @@ select au_id, city from authors where city in ('New York', 'San Francisco', 'Ham
 # FROM inner_table
 # WHERE inner_column = outer_column)
 
+# Получить список всех книг, продажи которых равны или превышают средний уровень продаж книг аналогичного типа.
+select candidate.title_id, candidate.type, candidate.sales from titles candidate where sales >= (select avg(sales) from titles average where average.type = candidate.type);
+
+# Получить список всех авторов, которые получают 100% (1.0) гонорара за книгу.
+select au_id, au_fname, au_lname from authors where au_id in (select au_id from title_authors where royalty_share = 1.0);
+
+# используем сложный запрос
+select au_id, au_fname, au_lname from authors where 1.0 in (select royalty_share from title_authors where title_authors.au_id = authors.au_id);
 
 
 
