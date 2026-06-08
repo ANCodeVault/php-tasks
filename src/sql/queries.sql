@@ -1094,6 +1094,16 @@ select au_id, au_fname, au_lname from authors where au_id in (select au_id from 
 # используем сложный запрос
 select au_id, au_fname, au_lname from authors where 1.0 in (select royalty_share from title_authors where title_authors.au_id = authors.au_id);
 
+# Таблицы publishers и titles содержат столбец pub_id, но в этом запросе вам не нужно точно его указывать, так как SQL определятет название таблиц.
+select pub_name from publishers where pub_id in (select pub_id from titles where type = 'biography');
+
+select pub_name from publishers where publishers.pub_id in (select titles.pub_id from titles where type = 'biography');
+
+# Отобразить каждую биографию, ее цену, среднюю цену всех книг и разницу в цене между биографией и средней ценой всех книг.
+select title_id, price, (select avg(price) from titles) as 'avg(price)', price - (select avg(price) from titles) as Difference from titles where type = 'biography';
+
+
+
 
 
 
