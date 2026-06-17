@@ -1102,9 +1102,14 @@ select pub_name from publishers where publishers.pub_id in (select titles.pub_id
 # Отобразить каждую биографию, ее цену, среднюю цену всех книг и разницу в цене между биографией и средней ценой всех книг.
 select title_id, price, (select avg(price) from titles) as 'avg(price)', price - (select avg(price) from titles) as Difference from titles where type = 'biography';
 
+# Получить список всех авторов книг в одной строке.
+select title_id, (select au_id from title_authors ta where au_order = 1 and title_id = t.title_id) as 'Author 1',
+       (select au_id from title_authors ta where au_order = 2 and title_id = t.title_id) as 'Author 2',
+       (select au_id from title_authors ta where au_order = 3 and title_id = t.title_id) as 'Author 3'
+from titles t;
 
-
-
+# Отобразить спикок книг, которые написал каждый автор (один или в соавторстве), включая авторов, не написавших ничего.
+select au_id, (select count(*) from title_authors ta where ta.au_id=a.au_id) as 'Num books' from authors a order by au_id asc;
 
 
 
